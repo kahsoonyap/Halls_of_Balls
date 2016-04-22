@@ -54,39 +54,73 @@ var ball = function(xcor, ycor, r, xv, yv){
 	c.setAttribute("cx", x);
 	c.setAttribute("cy", y);	
     };
-
+    
+    var remove = function(){
+	svg.removeChild(c);
+    }
+    
+    var randomize = function(){
+	r=getRadius()
+	c.setAttribute("cx",Math.floor(Math.random() * (xmax - 2*r)) + r);
+	c.setAttribute("cy",Math.floor(Math.random() * (ymax - 2*r)) + r);
+    }
     return {
 	getX: getX,
 	getY: getY,
 	getR: getRadius,
 	move: move,
+	remove: remove,
 	setXVel: setXVel,
-	setYVel: setYVel
+	setYVel: setYVel,
+	randomize: randomize
     };
 }
 
-for (var i = 0; i < 5; i ++){
-    var r = Math.floor(Math.random() * 50) + 5;
-    var x = Math.floor(Math.random() * (xmax - 2*r)) + r;
-    var y = Math.floor(Math.random() * (ymax - 2*r)) + r;
-    var rx = Math.floor(Math.random() * 50);
-    var ry = Math.floor(Math.random() * 50);
-    var xv = Math.floor(Math.random() * 5) + 1;
-    var yv = Math.floor(Math.random() * 5) + 1;
-    if (rx % 2 == 0){
-	xv *= -1;
+//for (var i = 0; i < 5; i ++){
+var createBalls = function(){
+    while(hallsOfBalls.length<5){
+	var r = Math.floor(Math.random() * 50) + 5;
+	var x = Math.floor(Math.random() * (xmax - 2*r)) + r;
+	var y = Math.floor(Math.random() * (ymax - 2*r)) + r;
+	var rx = Math.floor(Math.random() * 50);
+	var ry = Math.floor(Math.random() * 50);
+	var xv = Math.floor(Math.random() * 5) + 1;
+	var yv = Math.floor(Math.random() * 5) + 1;
+	if (rx % 2 == 0){
+	    xv *= -1;
+	}
+	if (ry % 2 == 0){
+	    yv *= -1;
+	}
+	//hallsOfBalls[i] = ball(x, y, r, xv, yv);
+	hallsOfBalls.push(ball(x,y,r,xv,yv));
     }
-    if (ry % 2 == 0){
-	yv *= -1;
-    }
-    hallsOfBalls[i] = ball(x, y, r, xv, yv);
 }
-
-var overLap = function(x, y){
+createBalls();
+var overLap = function(){
     for (var i = 0; i < hallsOfBalls.length; i ++){
+	ball=hallsOfBalls[i]
+	xlowerBound = ball.getX()-ball.getR()
+	xupperBound = ball.getX()+ball.getR()
+	ylowerBound = ball.getY()-ball.getR()
+	yupperBound = ball.getY()+ball.getR()
+	for (var j = 0; j < hallsOfBalls.length;j++){
+	    if (i==j && i==hallsOfBalls.length){
+	    	break;
+	    }
+	    else if (j==i){
+		continue;
+	     }
+	    ball2=hallsOfBalls[j];
+	    ball2x=ball2.getX();
+	    ball2y=ball2.getY();
+	    if (ball2x > xlowerBound && ball2x < xupperBound && ball2y > ylowerBound && ball2y < yupperBound){
+		ball2.randomize()
+	    }
+	}
     }
 }
-
+overLap();
 var goo = function(){
     var animate = function(){
         for (var i = 0 ; i < hallsOfBalls.length ; i++){
@@ -94,9 +128,11 @@ var goo = function(){
         }
     }
     interval = window.setInterval(animate, 25);
+    console.log("going");
 }
 var stopp = function(){
     window.clearInterval(interval);
+    console.log("stopping");
 }
 
 var go = document.getElementById("go");
