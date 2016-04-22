@@ -64,6 +64,10 @@ var ball = function(xcor, ycor, r, xv, yv){
 	c.setAttribute("cx",Math.floor(Math.random() * (xmax - 2*r)) + r);
 	c.setAttribute("cy",Math.floor(Math.random() * (ymax - 2*r)) + r);
     }
+    var collision =function(){
+	setXVel(xvel*-1);
+	setYVel(yvel*-1);
+    }
     return {
 	getX: getX,
 	getY: getY,
@@ -72,7 +76,8 @@ var ball = function(xcor, ycor, r, xv, yv){
 	remove: remove,
 	setXVel: setXVel,
 	setYVel: setYVel,
-	randomize: randomize
+	randomize: randomize,
+	collision: collision
     };
 }
 
@@ -121,11 +126,45 @@ var overLap = function(){
     }
 }
 overLap();
+
+var collide = function(ball,ball2){
+    xlowerBound = ball.getX()-ball.getR();
+    xupperBound = ball.getX()+ball.getR();
+    ylowerBound = ball.getY()-ball.getR();
+    yupperBound = ball.getY()+ball.getR();
+    edge1=[xlowerBound,xupperBound,ylowerBound,yupperBound];
+    xlowerBound2 = ball2.getX()-ball2.getR();
+    xupperBound2 = ball2.getX()+ball2.getR();
+    ylowerBound2 = ball2.getY()-ball2.getR();
+    yupperBound2 = ball2.getY()+ball2.getR();
+    edge2=[xlowerBound2,xupperBound2,ylowerBound2,xupperBound2];
+    for(var i =0; i<edge1.length;i++){
+	for(var j=0; j<edge2.length;j++){
+	    if (edge1[i]==edge2[j]){
+		ball.collision();
+		ball2.collision();
+	    }
+	}
+    }
+}
 var goo = function(){
     var animate = function(){
         for (var i = 0 ; i < hallsOfBalls.length ; i++){
             hallsOfBalls[i].move();
-        }
+	    //ball=hallsOfBalls[i]
+	    //ball.move();
+/*
+	    for (var j = 0; j < hallsOfBalls.length;j++){
+		if (i==j && i==hallsOfBalls.length){
+	    	    break;
+		}
+		else if (j==i){
+		    continue;
+		}
+		ball2=hallsOfBalls[j];
+		collide(ball,ball2);
+	    }*/
+	}
     }
     interval = window.setInterval(animate, 25);
     console.log("going");
@@ -139,5 +178,30 @@ var go = document.getElementById("go");
 go.addEventListener("click", goo);
 var stop = document.getElementById("stop");
 stop.addEventListener("click", stopp);
+
+/* not really sure how to do the collision
+tried doing this in animation then realized wouldn't work
+            xlowerBound = ball.getX()-ball.getR()
+	    xupperBound = ball.getX()+ball.getR()
+	    ylowerBound = ball.getY()-ball.getR()
+	    yupperBound = ball.getY()+ball.getR()
+	    edge1=[xlowerBound,xupperBound,ylowerBound,yupperBound]
+	    for (var j = 0; j < hallsOfBalls.length;j++){
+		if (i==j && i==hallsOfBalls.length){
+	    	    break;
+		}
+		else if (j==i){
+		    continue;
+		}
+		ball2=hallsOfBalls[j];
+		2xlowerBound = ball2.getX()-ball2.getR()
+		2xupperBound = ball2.getX()+ball2.getR()
+		2ylowerBound = ball2.getY()-ball2.getR()
+		2yupperBound = ball2.getY()+ball2.getR()
+		edge2=[2xlowerBound,2xupperBound,2ylowerBound,2xupperBound]
+		if( ){
+		    ball2.randomize()
+		}
+*/
 
 
