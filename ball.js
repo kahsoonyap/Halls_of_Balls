@@ -2,12 +2,14 @@ console.log("hello");
 var svg = document.getElementById("hall");
 var xmax = svg.getAttribute("width");
 var ymax = svg.getAttribute("height");
-var hallsOfBalls = []
+var hallsOfBalls = [];
+var interval;
 
 var ball = function(xcor, ycor, r, xv, yv){
     var radius = r;
     var x = xcor;
     var y = ycor;
+    console.log(y);
     var xvel = xv;
     var yvel = yv;
     var nextx = x + xvel;
@@ -24,7 +26,6 @@ var ball = function(xcor, ycor, r, xv, yv){
     var getX = function(){
         return x;
     };
-
     var getY = function(){
         return y;
     };
@@ -40,10 +41,10 @@ var ball = function(xcor, ycor, r, xv, yv){
     };
     
     var move = function(){
-	if (nextx - 10 <= 0 || nextx + 10 >= xmax){
+	if (nextx - r <= 0 || nextx + r >= xmax){
 	    xvel *= -1;
 	}
-	if (nexty -10 <= 0 || nexty + 10 >= ymax){
+	if (nexty - r <= 0 || nexty + r >= ymax){
 	    yvel *= -1;
 	}
 	x += xvel;
@@ -51,8 +52,7 @@ var ball = function(xcor, ycor, r, xv, yv){
 	nextx = x + xvel;
 	nexty = y + yvel;
 	c.setAttribute("cx", x);
-	c.setAttribute("cy", y);
-	console.log(nextx);	
+	c.setAttribute("cy", y);	
     };
 
     return {
@@ -71,8 +71,8 @@ for (var i = 0; i < 5; i ++){
     var y = Math.floor(Math.random() * (ymax - 2*r)) + r;
     var rx = Math.floor(Math.random() * 50);
     var ry = Math.floor(Math.random() * 50);
-    var xv = 1;
-    var yv;
+    var xv = Math.floor(Math.random() * 5) + 1;
+    var yv = Math.floor(Math.random() * 5) + 1;
     if (rx % 2 == 0){
 	xv *= -1;
     }
@@ -82,11 +82,21 @@ for (var i = 0; i < 5; i ++){
     hallsOfBalls[i] = ball(x, y, r, xv, yv);
 }
 
+var overLap = function(x, y){
+    for (var i = 0; i < hallsOfBalls.length; i ++){
+    }
+}
+
 var goo = function(){
-    
+    var animate = function(){
+        for (var i = 0 ; i < hallsOfBalls.length ; i++){
+            hallsOfBalls[i].move();
+        }
+    }
+    interval = window.setInterval(animate, 25);
 }
 var stopp = function(){
-    
+    window.clearInterval(interval);
 }
 
 var go = document.getElementById("go");
