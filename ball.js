@@ -1,3 +1,4 @@
+
 console.log("hello");
 var svg = document.getElementById("hall");
 var xmax = svg.getAttribute("width");
@@ -128,6 +129,7 @@ var overLap = function(){
 overLap();
 
 var collide = function(ball,ball2){
+    /*
     xlowerBound = ball.getX()-ball.getR();
     xupperBound = ball.getX()+ball.getR();
     ylowerBound = ball.getY()-ball.getR();
@@ -145,15 +147,29 @@ var collide = function(ball,ball2){
 		ball2.collision();
 	    }
 	}
+    }*/
+    x1=ball.getX()
+    x2=ball2.getX()
+    y1=ball.getY()
+    y2=ball2.getY()
+    r1=ball.getR()
+    r2=ball2.getR()
+    xDiff=x1-x2
+    yDiff=y1-y2
+    console.log(Math.sqrt(Math.pow(xDiff,2)+Math.pow(yDiff,2)));
+    if (Math.sqrt(Math.pow(xDiff,2)+Math.pow(yDiff,2)) < (r1+r2)){
+	ball.collision();
+	ball2.collision();
+	console.log("doing");
     }
 }
 var goo = function(){
     var animate = function(){
         for (var i = 0 ; i < hallsOfBalls.length ; i++){
-            hallsOfBalls[i].move();
-	    //ball=hallsOfBalls[i]
-	    //ball.move();
-/*
+            //hallsOfBalls[i].move();
+	    ball=hallsOfBalls[i]
+	    ball.move();
+
 	    for (var j = 0; j < hallsOfBalls.length;j++){
 		if (i==j && i==hallsOfBalls.length){
 	    	    break;
@@ -162,8 +178,9 @@ var goo = function(){
 		    continue;
 		}
 		ball2=hallsOfBalls[j];
+		//console.log("("+i+","+j+")");
 		collide(ball,ball2);
-	    }*/
+	    }
 	}
     }
     interval = window.setInterval(animate, 25);
